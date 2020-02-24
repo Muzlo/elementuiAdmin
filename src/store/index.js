@@ -3,13 +3,16 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  }
+const store = new Vuex.Store({
+    state: {
+        // 左侧菜单栏数据
+        menuItems:[]
+    },
+    mutations: {
+        setMenus(state, items) {
+            state.menuItems = [...items]
+        },
+    },
 })
+
+export default store
