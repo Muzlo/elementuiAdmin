@@ -28,9 +28,9 @@
 
                     <div v-for="child in item.children" :key="child.text">
                         <div v-if="!child.children">
-                            <el-menu-item-group>
+                            <!-- <el-menu-item-group> -->
                                 <el-menu-item :index="child.name">{{child.text}}</el-menu-item>
-                            </el-menu-item-group>
+                            <!-- </el-menu-item-group> -->
                         </div>
                         <div v-if="child.children">
                             <el-submenu :index="child.text">
@@ -131,7 +131,6 @@
 
 <script>
 import { resetTokenAndClearUser } from '../utils'
-
 export default {
     name: 'index',
     data() {
@@ -161,38 +160,20 @@ export default {
             userImg: '',
             // 主页路由名称
             home: 'home',
-            routerKey:null,// 刷新路由时 改变其key
+            dialogArr : []
         }
     },
     created() {
-        // 已经为ajax请求设置了loading 请求前自动调用 请求完成自动结束
-        // 添加请求拦截器
-        this.$axios.interceptors.request.use(config => {
-            this.showLoading = true
-            // 在发送请求之前做些什么
-            return config
-        }, error => {
-            this.showLoading = false
-            // 对请求错误做些什么
-            return Promise.reject(error)
+        this.$axios.post("/api/toutiao/index",this._qs.stringify({
+            type: 'top',
+            key: 'a7581c76b3593a87a427aeacc8d87443',
+        })).then((res)=>{
+            console.log(res)
+        }).catch((res)=>{
+            console.log(res)
         })
-        // 添加响应拦截器
-        this.$axios.interceptors.response.use(response => {
-            // 可以在这里对返回的数据进行错误处理 如果返回的 code 不对 直接报错或退出登陆
-            // 就可以省去在业务代码里重复判断
-            // 例子
-            // if (res.code != 0) {
-            //     this.$Message.error(res.msg)
-            //     return Promise.reject()
-            // }
-            this.showLoading = false
-            const res = response.data
-            return res
-        }, error => {
-            this.showLoading = false
-            // 对响应错误做点什么
-            return Promise.reject(error)
-        })
+        
+        
     },
     mounted() {
         // 第一个标签
@@ -332,7 +313,26 @@ export default {
         },
         // 刷新当前标签页
         reloadPage() {
-            location.reload()
+            let name = this.$route.name
+            let index = this.keepAliveData.indexOf(name)
+            this.$nextTick(() => {
+                if (this.tagsArry.length) {
+                    this.isShowRouter = false
+                    this.tagsArry.splice(index, 1)
+                    this.$nextTick(() => {
+                        this.tagsArry.splice(index, 0, { name, text: this.nameToTitle[name] })
+                        this.gotoPage(name)
+                        this.isShowRouter = true
+                    })
+                } else {
+                    this.isShowRouter = false
+                    this.$nextTick(() => {
+                        this.tagsArry.push({ name, text: this.nameToTitle[name] })
+                        this.gotoPage(name)
+                        this.isShowRouter = true
+                    })
+                }
+            })
         },
         // 关闭单个标签
         closeTag(i) {
@@ -352,6 +352,8 @@ export default {
             } else if (name != this.home) {
                 // 如果没有标签则跳往首页
                 this.gotoPage(this.home)
+            }else {
+                this.reloadPage()
             }
         },
         // 根据路由名称关闭页面
@@ -373,6 +375,7 @@ export default {
                 // 关闭所有标签
                 this.tagsArry = []
                 this.gotoPage(this.home)
+                this.reloadPage()
             }
         },
         // 激活标签
@@ -382,14 +385,17 @@ export default {
         // 消息通知
         info() {
             const self = this
-            this.$notify({
-            title: '提示',
-            message: '这是一条不会自动关闭的消息',
-            duration: 0,
-            onClick(){
-               self.gotoPage('msg') 
-            }
+            let notify=this.$notify({
+                title: '您有新消息',
+                dangerouslyUseHTMLString:true,
+                message: '<a style="cursor:pointer;padding:4px;background:blue;color:#fff;border-radius:6px;">点击查看</a>',
+                onClick(){
+                    self.gotoPage("msg");
+                    notify.close()
+                }
             });
+            
+            
 
         },
         // 菜单栏改变事件
@@ -415,6 +421,9 @@ export default {
 .index-vue {
     height: 100%;
     color: #666;
+}
+.el-menu{
+    border:0;
 }
 /* 侧边栏 */
 aside {

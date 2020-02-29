@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
+import login from './login/login.js'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
@@ -13,6 +13,9 @@ const store = new Vuex.Store({
             state.menuItems = [...items]
         },
     },
+    modules:{
+        login
+    }
 })
 
 export default store

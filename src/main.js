@@ -1,7 +1,6 @@
 import Vue from 'vue'
-
-import axios from 'axios'
-
+import instance from './common/js/http';
+import qs from 'qs'
 //elementUI
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
@@ -15,13 +14,8 @@ import './permission'
 
 Vue.config.productionTip = false
 
-// 设置基础URL
-axios.defaults.baseURL = ''
-// 设置请求超时时间
-axios.defaults.timeout = 5000
-
-Vue.prototype.$axios = axios
-
+Vue.prototype.$axios = instance
+Vue.prototype._qs = qs
 new Vue({
   router,
   store,

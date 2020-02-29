@@ -3,19 +3,20 @@
         <div class="home-content">
             首页
             <input type="text">
-            <p>1</p>
-            <p>1</p>
-            <p>1</p>
-            <p>1</p>
-            <p>1</p>
-            <p>1</p>
+            {{this.$store.state.login.str}}
         </div>
     </div>
 </template>
 
 <script>
+
 export default {
     name: 'home',
+    created(){
+
+        
+        
+    }
 }
 </script>
 

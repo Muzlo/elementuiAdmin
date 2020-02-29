@@ -13,6 +13,15 @@ export default {
             
         }
     },
+    created(){
+        this.$axios.post("/api/weixin/query",this._qs.stringify({
+            key: '200cdd820c46a6d44cd77ae6d630ca95',
+        })).then((res)=>{
+            console.log(res)
+        }).catch((res)=>{
+            console.log(res)
+        })  
+    },
     computed:{
         time(){
             return new Date().getTime()
